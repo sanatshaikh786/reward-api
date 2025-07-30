@@ -1,0 +1,6 @@
+com\example\rewardapi\controller\RewardController.class
+com\example\rewardapi\model\Transaction.class
+com\example\rewardapi\RewardApplication.class
+com\example\rewardapi\service\RewardService.class
+com\example\rewardapi\model\RewardResponse.class
+com\example\rewardapi\model\TransactionDetail.class
