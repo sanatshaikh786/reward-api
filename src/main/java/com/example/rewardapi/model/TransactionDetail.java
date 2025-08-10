@@ -1,23 +1,18 @@
 
 package com.example.rewardapi.model;
 
-import java.time.LocalDate;
-
 public class TransactionDetail {
-    private String id;
-    private LocalDate date;
-    private double amount;
+    private String month;
     private int points;
 
-    public TransactionDetail(String id, LocalDate date, double amount, int points) {
-        this.id = id;
-        this.date = date;
-        this.amount = amount;
+    public TransactionDetail(String month, int points) {
+        this.month = month;
         this.points = points;
     }
 
-    public String getId() { return id; }
-    public LocalDate getDate() { return date; }
-    public double getAmount() { return amount; }
+
+    public String getMonth() { return month; }
     public int getPoints() { return points; }
+    public void setMonth(String month) { this.month = month; }
+    public void setPoints(int points) { this.points = points; }
 }

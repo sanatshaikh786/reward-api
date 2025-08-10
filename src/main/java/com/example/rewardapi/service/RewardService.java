@@ -1,41 +1,25 @@
 
 package com.example.rewardapi.service;
 
+import com.example.rewardapi.entity.TransactionEntity;
 import com.example.rewardapi.model.*;
+import com.example.rewardapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
 public class RewardService {
+    private final TransactionRepository transactionRepository;
 
-    private final List<Transaction> transactions = Arrays.asList(
-        new Transaction("T1", "C1", LocalDate.of(2025, 4, 15), 120)
-        ,new Transaction("T2", "C1", LocalDate.of(2025, 5, 10), 90)
-        ,new Transaction("T4", "C1", LocalDate.of(2025, 6, 5), 130)
-    );
-
-    public RewardResponse calculateRewards(String customerId, LocalDate start, LocalDate end) {
-        List<TransactionDetail> details = new ArrayList<>();
-        Map<String, Integer> monthly = new HashMap<>();
-        int total = 0;
-
-        for (Transaction tx : transactions) {
-            if (!tx.getCustomerId().equals(customerId)) continue;
-            if (tx.getDate().isBefore(start) || tx.getDate().isAfter(end)) continue;
-
-            int points = calculatePoints(tx.getAmount());
-            total += points;
-            String month = tx.getDate().getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
-            monthly.put(month, monthly.getOrDefault(month, 0) + points);
-            details.add(new TransactionDetail(tx.getId(), tx.getDate(), tx.getAmount(), points));
-        }
-
-        return new RewardResponse(customerId, "Customer " + customerId, total, monthly, details);
+    public RewardService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
+
 
     private int calculatePoints(double amount) {
         int points = 0;
@@ -45,5 +29,38 @@ public class RewardService {
             points += (int)(amount - 50);
         }
         return points;
+    }
+    public RewardResponse getRewards(String customerId, LocalDate start, LocalDate end) {
+        // Fetch from repository
+        List<TransactionEntity> txns;
+        if (customerId != null && !customerId.isEmpty()) {
+            if (start != null && end != null) {
+                txns = transactionRepository.findByCustomerIdAndDateBetween(customerId, start, end);
+            } else {
+                txns = transactionRepository.findByCustomerId(customerId);
+            }
+        } else {
+            if (start != null && end != null) {
+                txns = transactionRepository.findByDateBetween(start, end);
+            } else {
+                txns = transactionRepository.findAll();
+            }
+        }
+
+        Map<String, Integer> monthly = new LinkedHashMap<>();
+        int total = 0;
+        for (TransactionEntity t : txns) {
+            int pts = calculatePoints(t.getAmount());
+            String month = t.getDate().getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + t.getDate().getYear();
+            monthly.put(month, monthly.getOrDefault(month, 0) + pts);
+            total += pts;
+        }
+
+        // Convert map to list of TransactionDetail for frontend-friendly structure
+        List<TransactionDetail> monthlyList = monthly.entrySet().stream()
+                .map(e -> new TransactionDetail(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+
+        return new RewardResponse(customerId, monthlyList, total);
     }
 }
