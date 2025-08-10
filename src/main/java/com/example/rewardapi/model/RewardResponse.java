@@ -6,23 +6,22 @@ import java.util.Map;
 
 public class RewardResponse {
     private String customerId;
-    private String customerName;
+    private List<TransactionDetail> monthlyRewards;
     private int totalPoints;
-    private Map<String, Integer> monthlyBreakdown;
-    private List<TransactionDetail> transactions;
 
-    public RewardResponse(String customerId, String customerName, int totalPoints,
-                          Map<String, Integer> monthlyBreakdown, List<TransactionDetail> transactions) {
+
+    public RewardResponse(String customerId, List<TransactionDetail> monthlyRewards, int totalPoints) {
         this.customerId = customerId;
-        this.customerName = customerName;
+        this.monthlyRewards = monthlyRewards;
         this.totalPoints = totalPoints;
-        this.monthlyBreakdown = monthlyBreakdown;
-        this.transactions = transactions;
     }
 
     public String getCustomerId() { return customerId; }
-    public String getCustomerName() { return customerName; }
+    public List<TransactionDetail> getMonthlyRewards() { return monthlyRewards; }
     public int getTotalPoints() { return totalPoints; }
-    public Map<String, Integer> getMonthlyBreakdown() { return monthlyBreakdown; }
-    public List<TransactionDetail> getTransactions() { return transactions; }
+
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public void setMonthlyRewards(List<TransactionDetail> monthlyRewards) { this.monthlyRewards = monthlyRewards; }
+    public void setTotalPoints(int totalPoints) { this.totalPoints = totalPoints; }
+
 }
