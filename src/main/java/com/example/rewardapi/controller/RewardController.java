@@ -4,6 +4,7 @@ package com.example.rewardapi.controller;
 import com.example.rewardapi.model.RewardResponse;
 import com.example.rewardapi.service.RewardService;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 @RequestMapping("/api/rewards")
 public class RewardController {
 
+    @Autowired
     private final RewardService rewardService;
 
     public RewardController(RewardService rewardService) {
@@ -23,7 +25,7 @@ public class RewardController {
 
     @GetMapping("/{customerId}")
     public ResponseEntity<RewardResponse> getRewards(
-            @RequestParam @NotBlank(message = "customerId is required") String customerId,
+            @PathVariable @NotBlank(message = "customerId is required") String customerId,
                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
 

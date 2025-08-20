@@ -1,11 +1,22 @@
-# Reward API
+# 🏆 Reward Points API
 
-This project calculates customer reward points based on their purchase history over a selected time range.
+This is a Spring Boot REST API that calculates monthly and total reward points for customers based on their purchase transactions over a specified period.
 
-## How it works
-- This is a Spring Boot REST API
-- Calculates points per transaction based on rules
-- Provides totals and monthly breakdowns
+---
 
-API Usage
-GET /api/rewards?customerId=C1 Optional params: start (YYYY-MM-DD), end (YYYY-MM-DD) If start/end omitted, last 3 months from today are used.
+## 📚 Business Logic
+
+Customers earn reward points based on transaction amounts:
+
+- ✅ **2 points** for every dollar spent **over $100**.
+- ✅ **1 point** for every dollar spent **between $50 and $100**.
+- ❌ No points for spending $50 or less.
+
+### 🧮 Example:
+
+A transaction of **$120** earns:
+
+- (120 - 100) × 2 = 40 points  
+- (100 - 50) × 1 = 50 points  
+- **Total = 90 points**
+
